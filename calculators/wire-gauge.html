@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Sección de Cable | IEC 60364</title>
+  <meta name="description" content="Calcula la sección mínima de cable por caída de tensión e intensidad admisible según IEC 60364-5-52. Herramienta profesional gratuita.">
+  <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dark-mode.css">
+  <script src="../js/ui.js"></script>
+
+  <!-- Google Analytics: sustituir G-XXXXXXXXXX por tu ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="../index.html">⚡ ElectricCalc</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="voltage-drop.html">Caída Tensión</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="wire-gauge.html">Sección Cable</a></li>
+          <li class="nav-item"><a class="nav-link" href="ampacity.html">Ampacidad</a></li>
+          <li class="nav-item"><a class="nav-link" href="../blog/index.html">Blog</a></li>
+          <li class="nav-item ms-lg-2 my-2 my-lg-0"><button id="themeToggle" class="theme-toggle" type="button">🌙</button></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <h1 class="mb-4">📏 Calculadora Sección de Cable</h1>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card card-static shadow-sm mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Datos de Entrada</h5>
+          </div>
+          <div class="card-body">
+            <form id="calcForm" data-calculate="calculateWireGauge" novalidate>
+              <div class="mb-3">
+                <label for="power" class="form-label">Potencia (W)</label>
+                <input type="number" id="power" class="form-control" value="3500" min="1" step="100" required>
+              </div>
+              <div class="row">
+                <div class="col-sm-7 mb-3">
+                  <label for="voltage" class="form-label">Tensión (V)</label>
+                  <select id="voltage" class="form-select" required>
+                    <option value="230">230V Monofásico</option>
+                    <option value="400">400V Trifásico</option>
+                    <option value="110">110V Baja Tensión</option>
+                  </select>
+                </div>
+                <div class="col-sm-5 mb-3">
+                  <label for="cosPhi" class="form-label">cos φ</label>
+                  <input type="number" id="cosPhi" class="form-control" value="1" min="0.1" max="1" step="0.01" required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="distance" class="form-label">Distancia (m)</label>
+                  <input type="number" id="distance" class="form-control" value="30" min="1" step="5" required>
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label for="maxDrop" class="form-label">Caída máxima</label>
+                  <select id="maxDrop" class="form-select" required>
+                    <option value="1.5">1,5 % (derivación individual)</option>
+                    <option value="3" selected>3 % (alumbrado)</option>
+                    <option value="5">5 % (otros usos)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="material" class="form-label">Material</label>
+                  <select id="material" class="form-select" required>
+                    <option value="Cu" selected>Cobre (γ = 56)</option>
+                    <option value="Al">Aluminio (γ = 35)</option>
+                  </select>
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label for="insulation" class="form-label">Aislamiento</label>
+                  <select id="insulation" class="form-select" required>
+                    <option value="PVC" selected>PVC (70 °C)</option>
+                    <option value="XLPE">XLPE / EPR (90 °C)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="method" class="form-label">Método de instalación</label>
+                <select id="method" class="form-select" required>
+                  <option value="A1">A1 - Conductores en tubo empotrado en pared aislante</option>
+                  <option value="A2">A2 - Cable multiconductor en tubo empotrado en pared aislante</option>
+                  <option value="B1" selected>B1 - Conductores en tubo sobre pared</option>
+                  <option value="B2">B2 - Cable multiconductor en tubo sobre pared</option>
+                  <option value="C">C - Cable sobre pared (grapado)</option>
+                  <option value="D">D - Cable en conducto enterrado</option>
+                </select>
+              </div>
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">🔢 CALCULAR</button>
+                <button type="reset" class="btn btn-secondary">Limpiar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card card-static shadow-sm mb-4">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Resultados</h5>
+          </div>
+          <div class="card-body">
+            <div id="resultsContainer" style="display:none;">
+              <div class="text-center mb-3">
+                <h6 class="text-muted">Sección recomendada</h6>
+                <h2 id="recommendedValue" class="text-primary fw-bold result-value">-</h2>
+              </div>
+              <div id="statusAlert" class="alert mb-3"></div>
+              <table class="table table-sm mb-3">
+                <tbody>
+                  <tr><th scope="row">Intensidad de cálculo (Ib)</th><td id="intensityValue" class="text-end result-value">-</td></tr>
+                  <tr><th scope="row">Sección teórica por caída de tensión</th><td id="sMinValue" class="text-end result-value">-</td></tr>
+                  <tr><th scope="row">Sección normalizada por caída de tensión</th><td id="sDropValue" class="text-end result-value">-</td></tr>
+                  <tr><th scope="row">Sección por intensidad admisible</th><td id="sAmpValue" class="text-end result-value">-</td></tr>
+                  <tr><th scope="row">Caída real con la sección recomendada</th><td id="realDropValue" class="text-end result-value">-</td></tr>
+                  <tr><th scope="row">Intensidad admisible (Iz)</th><td id="izValue" class="text-end result-value">-</td></tr>
+                </tbody>
+              </table>
+              <p id="alNote" class="small text-warning-emphasis mb-0" style="display:none;">
+                ⚠ Para aluminio la intensidad admisible es una aproximación (78 % del cobre). Verifica con las tablas del fabricante.
+              </p>
+            </div>
+            <div id="waitingContainer">
+              <div class="alert alert-info">⏳ Completa datos y haz clic en CALCULAR</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-static shadow-sm">
+      <div class="card-body">
+        <h2 class="h5">Cómo se calcula</h2>
+        <p class="mb-1">1. Por caída de tensión — monofásico: <span class="formula">S = 2 · L · P / (γ · e · V)</span>; trifásico: <span class="formula">S = L · P / (γ · e · V)</span></p>
+        <p class="mb-2">2. Por intensidad admisible: menor sección con <span class="formula">Iz ≥ Ib</span> (IEC 60364-5-52, 30 °C, sin agrupamiento).</p>
+        <p class="text-muted small mb-0">Se elige la mayor de las dos secciones. e = caída máxima en voltios. Para temperatura distinta de 30 °C o circuitos agrupados, usa la
+          <a href="ampacity.html">calculadora de ampacidad</a>.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-white py-4 text-center">
+    <p class="mb-1">© 2026 ElectricCalc. Todos los derechos reservados.</p>
+    <small>Basado en normas IEC 60364, NEC</small>
+  </footer>
+
+  <!-- Google AdSense: sustituir ca-pub-XXXXXXXXXXXXXXXX por tu ID -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/calculators.js"></script>
+</body>
+</html>

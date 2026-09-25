@@ -1,0 +1,17 @@
+{
+  "buildCommand": "",
+  "devCommand": "npx http-server",
+  "installCommand": "",
+  "framework": null,
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    }
+  ]
+}

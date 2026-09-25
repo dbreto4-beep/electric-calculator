@@ -1,0 +1,28 @@
+/* Tema oscuro. Bootstrap 5.3 cambia sus colores con data-bs-theme="dark";
+   aquí se ajustan los estilos propios de styles.css. */
+[data-bs-theme="dark"] body {
+  color: #dee2e6;
+  background-color: #111827;
+}
+
+[data-bs-theme="dark"] .card {
+  background-color: #1f2937;
+}
+
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+  border-color: #374151;
+  background-color: #111827;
+}
+
+[data-bs-theme="dark"] .card:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+[data-bs-theme="dark"] footer {
+  border-top-color: #374151;
+}
+
+[data-bs-theme="dark"] .navbar.bg-primary {
+  background-color: #172554 !important;
+}

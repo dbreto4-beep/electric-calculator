@@ -1,0 +1,12 @@
+{
+  "name": "electric-calculator",
+  "version": "1.0.0",
+  "description": "Calculadoras eléctricas profesionales gratuitas",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server -p 8000"
+  },
+  "keywords": ["electricity", "calculator", "engineering"],
+  "author": "Diego",
+  "license": "MIT"
+}

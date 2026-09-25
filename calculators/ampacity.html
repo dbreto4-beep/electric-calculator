@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Intensidad Admisible (Ampacidad) | IEC 60364-5-52</title>
+  <meta name="description" content="Calcula la intensidad máxima admisible de un cable según sección, aislamiento, método de instalación, temperatura y agrupamiento (IEC 60364-5-52).">
+  <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../css/dark-mode.css">
+  <script src="../js/ui.js"></script>
+
+  <!-- Google Analytics: sustituir G-XXXXXXXXXX por tu ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="../index.html">⚡ ElectricCalc</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="voltage-drop.html">Caída Tensión</a></li>
+          <li class="nav-item"><a class="nav-link" href="wire-gauge.html">Sección Cable</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="ampacity.html">Ampacidad</a></li>
+          <li class="nav-item"><a class="nav-link" href="../blog/index.html">Blog</a></li>
+          <li class="nav-item ms-lg-2 my-2 my-lg-0"><button id="themeToggle" class="theme-toggle" type="button">🌙</button></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-5">
+    <h1 class="mb-4">⚙️ Calculadora de Ampacidad</h1>
+
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card card-static shadow-sm mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Datos de Entrada</h5>
+          </div>
+          <div class="card-body">
+            <form id="calcForm" data-calculate="calculateAmpacity" novalidate>
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="wireSection" class="form-label">Sección (mm², cobre)</label>
+                  <select id="wireSection" class="form-select" required>
+                    <option value="1.5">1.5 mm²</option>
+                    <option value="2.5" selected>2.5 mm²</option>
+                    <option value="4">4 mm²</option>
+                    <option value="6">6 mm²</option>
+                    <option value="10">10 mm²</option>
+                    <option value="16">16 mm²</option>
+                    <option value="25">25 mm²</option>
+                    <option value="35">35 mm²</option>
+                    <option value="50">50 mm²</option>
+                    <option value="70">70 mm²</option>
+                    <option value="95">95 mm²</option>
+                    <option value="120">120 mm²</option>
+                  </select>
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label for="insulation" class="form-label">Aislamiento</label>
+                  <select id="insulation" class="form-select" required>
+                    <option value="PVC" selected>PVC (70 °C)</option>
+                    <option value="XLPE">XLPE / EPR (90 °C)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="method" class="form-label">Método de instalación</label>
+                <select id="method" class="form-select" required>
+                  <option value="A1">A1 - Conductores en tubo empotrado en pared aislante</option>
+                  <option value="A2">A2 - Cable multiconductor en tubo empotrado en pared aislante</option>
+                  <option value="B1" selected>B1 - Conductores en tubo sobre pared</option>
+                  <option value="B2">B2 - Cable multiconductor en tubo sobre pared</option>
+                  <option value="C">C - Cable sobre pared (grapado)</option>
+                  <option value="D">D - Cable en conducto enterrado</option>
+                </select>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="loaded" class="form-label">Conductores cargados</label>
+                  <select id="loaded" class="form-select" required>
+                    <option value="2" selected>2 (monofásico)</option>
+                    <option value="3">3 (trifásico)</option>
+                  </select>
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label for="ambientTemp" class="form-label">Temperatura ambiente</label>
+                  <select id="ambientTemp" class="form-select" required>
+                    <option value="10">10 °C</option>
+                    <option value="15">15 °C</option>
+                    <option value="20">20 °C</option>
+                    <option value="25">25 °C</option>
+                    <option value="30" selected>30 °C</option>
+                    <option value="35">35 °C</option>
+                    <option value="40">40 °C</option>
+                    <option value="45">45 °C</option>
+                    <option value="50">50 °C</option>
+                    <option value="55">55 °C</option>
+                    <option value="60">60 °C</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6 mb-3">
+                  <label for="circuits" class="form-label">Circuitos agrupados</label>
+                  <select id="circuits" class="form-select" required>
+                    <option value="1" selected>1 (sin agrupar)</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9 o más</option>
+                  </select>
+                </div>
+                <div class="col-sm-6 mb-3">
+                  <label for="designCurrent" class="form-label">Intensidad de cálculo Ib (A) <span class="text-muted">opcional</span></label>
+                  <input type="number" id="designCurrent" class="form-control" min="0" step="0.1" placeholder="p. ej. 16">
+                </div>
+              </div>
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">🔢 CALCULAR</button>
+                <button type="reset" class="btn btn-secondary">Limpiar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card card-static shadow-sm mb-4">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Resultados</h5>
+          </div>
+          <div class="card-body">
+            <div id="resultsContainer" style="display:none;">
+              <div class="text-center mb-3">
+                <h6 class="text-muted">Intensidad admisible corregida (Iz)</h6>
+                <h2 id="izValue" class="text-primary fw-bold result-value">-</h2>
+              </div>
+              <div id="statusAlert" class="alert mb-3" style="display:none;"></div>
+              <div class="row text-center mb-3">
+                <div class="col-4"><h6 class="text-muted small">Iz tabla</h6><div id="baseValue" class="fw-semibold result-value">-</div></div>
+                <div class="col-4"><h6 class="text-muted small">Factor temp.</h6><div id="ktValue" class="fw-semibold result-value">-</div></div>
+                <div class="col-4"><h6 class="text-muted small">Factor agrup.</h6><div id="kgValue" class="fw-semibold result-value">-</div></div>
+              </div>
+              <h6 class="text-muted">Todas las secciones en estas condiciones</h6>
+              <div class="table-responsive">
+                <table class="table table-sm table-sections mb-2">
+                  <thead><tr><th>Sección (mm²)</th><th>Iz tabla (A)</th><th>Iz corregida (A)</th></tr></thead>
+                  <tbody id="sectionsTableBody"></tbody>
+                </table>
+              </div>
+              <p id="groundNote" class="small text-muted mb-0" style="display:none;">
+                Método D: el factor de temperatura corresponde a temperatura del terreno (referencia 20 °C).
+              </p>
+            </div>
+            <div id="waitingContainer">
+              <div class="alert alert-info">⏳ Completa datos y haz clic en CALCULAR</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-static shadow-sm">
+      <div class="card-body">
+        <h2 class="h5">Cómo se calcula</h2>
+        <p class="mb-2"><span class="formula">Iz = Iz tabla × Kt × Kg</span></p>
+        <p class="text-muted small mb-0">Valores de cobre de IEC 60364-5-52 (tablas B.52.2 a B.52.5), factor de temperatura según B.52.14 / B.52.15
+          y factor de agrupamiento según B.52.17 (cables agrupados en aire o sobre superficie). Valores orientativos: verifica siempre con la norma vigente y los datos del fabricante.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-dark text-white py-4 text-center">
+    <p class="mb-1">© 2026 ElectricCalc. Todos los derechos reservados.</p>
+    <small>Basado en normas IEC 60364, NEC</small>
+  </footer>
+
+  <!-- Google AdSense: sustituir ca-pub-XXXXXXXXXXXXXXXX por tu ID -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/calculators.js"></script>
+</body>
+</html>

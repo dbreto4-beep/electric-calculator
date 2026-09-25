@@ -1,0 +1,39 @@
+/* Mobile */
+@media (max-width: 767px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .display-4 {
+    font-size: 2rem;
+  }
+
+  .container {
+    padding: 0 15px;
+  }
+
+  .btn {
+    padding: 10px 15px;
+    font-size: 0.95rem;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero-section {
+    min-height: 400px;
+  }
+}
+
+/* Print */
+@media print {
+  .navbar,
+  footer,
+  .btn {
+    display: none;
+  }
+
+  .card {
+    page-break-inside: avoid;
+  }
+}
